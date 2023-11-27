@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  ethereum-node:
+    image: ethereum/client-go:latest
+    command: --networkid ${NETWORK_ID} --nousb --nodiscover --maxpeers 5 --port ${P2P_PORT} --http --http.addr "0.0.0.0" --http.port ${HTTP_PORT} --http.api "eth,net,web3,personal" --allow-insecure-unlock --ws --ws.addr "0.0.0.0" --ws.port ${WS_PORT} --ws.api "eth,net,web3,personal" --ipcdisable --nat extip:${EXTERNAL_IP} --mine --miner.threads 1 --miner.etherbase ${MINER_ADDRESS} --click
+    volumes:
+      - ${DATA_DIR}:/root
+    networks:
+      - ethereum-net
+    ports:
+      - "${HTTP_PORT}:${HTTP_PORT}"
+    expose:
+      - "${P2P_PORT}"
+    environment:
+      NETWORK_ID: ${NETWORK_ID}
+      P2P_PORT: ${P2P_PORT}
+      HTTP_PORT: ${HTTP_PORT}
+      WS_PORT: ${WS_PORT}
+      EXTERNAL_IP: ${EXTERNAL_IP}
+      DATA_DIR: /root
+      MINER_ADDRESS: "0x<your_miner_address>"
+
+networks:
+  ethereum-net:
+    internal: true
